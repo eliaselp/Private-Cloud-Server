@@ -1,4 +1,3 @@
-```markdown
 # Mi Nube Privada - Almacenamiento Seguro con Cifrado AES-256
 
 ## 📋 Descripción General
