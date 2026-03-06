@@ -1,0 +1,48 @@
+<!-- app/templates/admin/add_folder.html -->
+{% extends "base.html" %}
+{% block title %}Añadir Carpeta - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-folder-plus"></i> Añadir Nueva Carpeta</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nombre de la carpeta</label>
+                        {{ form.name(class="form-control") }}
+                        <div class="form-text">Nombre visible para los usuarios</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="path" class="form-label">Ruta en el sistema</label>
+                        {{ form.path(class="form-control") }}
+                        <div class="form-text">Ruta absoluta o relativa donde se guardarán los archivos</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Descripción</label>
+                        {{ form.description(class="form-control", rows=3) }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="allowed_roles" class="form-label">Roles permitidos</label>
+                        {{ form.allowed_roles(class="form-control") }}
+                        <div class="form-text">Separados por comas: viewer,editor,admin</div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.is_active(class="form-check-input") }}
+                        <label class="form-check-label" for="is_active">Carpeta activa</label>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-save"></i> Crear Carpeta
+                    </button>
+                    <a href="{{ url_for('admin.list_folders') }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

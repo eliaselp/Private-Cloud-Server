@@ -1,0 +1,72 @@
+<!-- app/templates/admin/folders.html -->
+{% extends "base.html" %}
+{% block title %}Carpetas Compartidas - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-folder"></i> Carpetas Compartidas</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('admin.add_folder') }}" class="btn btn-success">
+            <i class="bi bi-folder-plus"></i> Nueva Carpeta
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Ruta</th>
+                                <th>Descripción</th>
+                                <th>Roles</th>
+                                <th>Estado</th>
+                                <th>Creada</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for folder in folders %}
+                            <tr>
+                                <td>{{ folder.id }}</td>
+                                <td>{{ folder.name }}</td>
+                                <td><small>{{ folder.path }}</small></td>
+                                <td>{{ folder.description or '-' }}</td>
+                                <td><small>{{ folder.allowed_roles }}</small></td>
+                                <td>
+                                    {% if folder.is_active %}
+                                    <span class="badge bg-success">Activa</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Inactiva</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ folder.created_at.strftime('%d/%m/%Y') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.edit_folder', folder_id=folder.id) }}" class="btn btn-sm btn-warning">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ url_for('admin.delete_folder', folder_id=folder.id) }}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Eliminar carpeta? Esta acción no elimina los archivos.')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                    <a href="{{ url_for('main.browse', folder_id=folder.id) }}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-folder2-open"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

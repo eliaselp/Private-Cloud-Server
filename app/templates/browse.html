@@ -1,0 +1,102 @@
+<!-- app/templates/browse.html -->
+{% extends "base.html" %}
+{% block title %}Explorar {{ folder.name }} - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Inicio</a></li>
+                <li class="breadcrumb-item active">{{ folder.name }}</li>
+            </ol>
+        </nav>
+        <h2>
+            <i class="bi bi-folder"></i> {{ folder.name }}
+            <small class="text-muted fs-6">{{ folder.path }}</small>
+        </h2>
+    </div>
+</div>
+
+{% if can_upload %}
+<div class="row mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="bi bi-upload"></i> Subir Archivos</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('main.upload', folder_id=folder.id) }}" enctype="multipart/form-data">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="files" class="form-label">Seleccionar archivos</label>
+                        <input type="file" class="form-control" name="files[]" id="files" multiple required>
+                        <div class="form-text">Puedes seleccionar múltiples archivos. Tamaño máximo: 100MB</div>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-cloud-upload"></i> Subir Archivos
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-files"></i> Archivos en {{ folder.name }}</h5>
+            </div>
+            <div class="card-body">
+                {% if files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tamaño</th>
+                                <th>Modificado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in files %}
+                            <tr class="file-row">
+                                <td>
+                                    <i class="bi bi-file-earmark file-icon"></i>
+                                    {{ file.name }}
+                                </td>
+                                <td>{{ file.size_str }}</td>
+                                <td>{{ file.modified_str }}</td>
+                                <td>
+                                    <a href="{{ url_for('main.download', folder_id=folder.id, filename=file.encrypted_name) }}" class="btn btn-sm btn-primary">
+                                        <i class="bi bi-download"></i> Descargar
+                                    </a>
+                                    {% if can_delete %}
+                                    <a href="{{ url_for('main.delete', folder_id=folder.id, filename=file.encrypted_name) }}" 
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('¿Estás seguro de eliminar {{ file.name }}?')">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-muted my-5">
+                    <i class="bi bi-emoji-frown fs-1"></i><br>
+                    No hay archivos en esta carpeta.
+                    {% if can_upload %}
+                    Sube algunos archivos usando el formulario superior.
+                    {% endif %}
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

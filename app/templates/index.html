@@ -1,0 +1,49 @@
+<!-- app/templates/index.html -->
+{% extends "base.html" %}
+{% block title %}Inicio - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="bi bi-cloud"></i> Bienvenido a tu Nube Privada
+        </h1>
+        <p class="lead">Archivos cifrados con AES-256, solo tú tienes la clave.</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    {% if folders %}
+        {% for folder in folders %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-folder"></i> {{ folder.name }}
+                    </h5>
+                    {% if folder.description %}
+                    <p class="card-text text-muted">{{ folder.description }}</p>
+                    {% endif %}
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="bi bi-hdd"></i> Ruta: {{ folder.path }}
+                        </small>
+                    </p>
+                    <a href="{{ url_for('main.browse', folder_id=folder.id) }}" class="btn btn-primary">
+                        <i class="bi bi-folder2-open"></i> Explorar
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No hay carpetas compartidas disponibles.
+            {% if current_user.is_admin %}
+            <a href="{{ url_for('admin.add_folder') }}" class="alert-link">Añadir una carpeta</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+<!-- app/templates/profile.html -->
+{% extends "base.html" %}
+{% block title %}Perfil - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> Información Personal</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Usuario:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Rol:</strong> <span class="badge bg-info">{{ user.role }}</span></p>
+                <p><strong>Miembro desde:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+                <p><strong>Último acceso:</strong> {{ user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else 'Nunca' }}</p>
+                <p><strong>Última IP:</strong> {{ user.last_ip or 'Desconocida' }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-pencil"></i> Editar Perfil</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.profile') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        {{ form.email(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Actualizar Perfil
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0"><i class="bi bi-key"></i> Cambiar Contraseña</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('auth.change_password') }}" class="btn btn-warning">
+                    <i class="bi bi-key"></i> Cambiar Contraseña
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

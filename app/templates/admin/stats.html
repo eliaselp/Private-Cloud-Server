@@ -1,0 +1,107 @@
+<!-- app/templates/admin/stats.html -->
+{% extends "base.html" %}
+{% block title %}Estadísticas - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-graph-up"></i> Estadísticas del Sistema</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h6>Total Usuarios</h6>
+                <h2>{{ total_users }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h6>Archivos Subidos</h6>
+                <h2>{{ total_files }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h6>Descargas</h6>
+                <h2>{{ total_downloads }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h6>Almacenamiento</h6>
+                <h2>{{ total_storage|filesizeformat }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-trophy"></i> Usuarios más activos</h5>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in active_users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.total_actions }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-calendar"></i> Actividad por día (últimos 30 días)</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('activityChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: [{% for day in daily_activity %}'{{ day.date }}',{% endfor %}],
+        datasets: [{
+            label: 'Actividad',
+            data: [{% for day in daily_activity %}{{ day.count }},{% endfor %}],
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+{% endblock %}

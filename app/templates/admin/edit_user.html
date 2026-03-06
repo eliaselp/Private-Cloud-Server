@@ -1,0 +1,60 @@
+<!-- app/templates/admin/edit_user.html -->
+{% extends "base.html" %}
+{% block title %}Editar Usuario - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Usuario: {{ user.username }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Usuario</label>
+                            {{ form.username(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            {{ form.email(class="form-control") }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="role" class="form-label">Rol</label>
+                            {{ form.role(class="form-select") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="is_active" class="form-label">Estado</label>
+                            <div class="form-check mt-2">
+                                {{ form.is_active(class="form-check-input") }}
+                                <label class="form-check-label" for="is_active">Usuario activo</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>Cambiar Contraseña (opcional)</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="new_password" class="form-label">Nueva Contraseña</label>
+                            {{ form.new_password(class="form-control") }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="confirm_new_password" class="form-label">Confirmar Contraseña</label>
+                            {{ form.confirm_new_password(class="form-control") }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-save"></i> Actualizar Usuario
+                    </button>
+                    <a href="{{ url_for('admin.view_user', user_id=user.id) }}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

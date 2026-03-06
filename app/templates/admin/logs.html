@@ -1,0 +1,111 @@
+<!-- app/templates/admin/logs.html -->
+{% extends "base.html" %}
+{% block title %}Logs - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-journal-text"></i> Registro de Actividad</h2>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        <form method="GET" class="row g-3">
+            <div class="col-auto">
+                <select name="action" class="form-select">
+                    <option value="">Todas las acciones</option>
+                    <option value="upload" {% if action == 'upload' %}selected{% endif %}>Subidas</option>
+                    <option value="download" {% if action == 'download' %}selected{% endif %}>Descargas</option>
+                    <option value="delete" {% if action == 'delete' %}selected{% endif %}>Eliminaciones</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-filter"></i> Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Fecha/Hora</th>
+                                <th>Usuario</th>
+                                <th>Acción</th>
+                                <th>Archivo</th>
+                                <th>Carpeta</th>
+                                <th>Tamaño</th>
+                                <th>IP</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs.items %}
+                            <tr>
+                                <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+                                <td>{{ log.user.username }}</td>
+                                <td>
+                                    {% if log.action == 'upload' %}
+                                    <span class="badge bg-success">Subida</span>
+                                    {% elif log.action == 'download' %}
+                                    <span class="badge bg-info">Descarga</span>
+                                    {% elif log.action == 'delete' %}
+                                    <span class="badge bg-danger">Eliminación</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.filename }}</td>
+                                <td>{{ log.folder }}</td>
+                                <td>{{ log.file_size|filesizeformat if log.file_size else '-' }}</td>
+                                <td>{{ log.ip_address }}</td>
+                                <td>
+                                    {% if log.success %}
+                                    <span class="badge bg-success">Éxito</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">Error</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if logs.pages > 1 %}
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        {% if logs.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.view_logs', page=logs.prev_num, action=action) }}">Anterior</a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for page_num in logs.iter_pages() %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == logs.page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('admin.view_logs', page=page_num, action=action) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if logs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.view_logs', page=logs.next_num, action=action) }}">Siguiente</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

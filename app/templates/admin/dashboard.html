@@ -1,0 +1,87 @@
+<!-- app/templates/admin/dashboard.html -->
+{% extends "base.html" %}
+{% block title %}Dashboard Admin - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard de Administración</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Usuarios</h5>
+                <p class="display-4">{{ total_users }}</p>
+                <p class="mb-0">Activos: {{ active_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Archivos</h5>
+                <p class="display-4">{{ total_files }}</p>
+                <p class="mb-0">Subidos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Descargas</h5>
+                <p class="display-4">{{ total_downloads }}</p>
+                <p class="mb-0">Totales</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Actividad Reciente</h5>
+                <p class="display-4">{{ recent_activity }}</p>
+                <p class="mb-0">Últimos 7 días</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-people"></i> Acciones Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('admin.list_users') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-people"></i> Gestionar Usuarios
+                    </a>
+                    <a href="{{ url_for('admin.list_folders') }}" class="btn btn-outline-success">
+                        <i class="bi bi-folder"></i> Gestionar Carpetas
+                    </a>
+                    <a href="{{ url_for('admin.view_logs') }}" class="btn btn-outline-info">
+                        <i class="bi bi-journal-text"></i> Ver Logs
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-outline-warning">
+                        <i class="bi bi-person-plus"></i> Crear Usuario
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-graph-up"></i> Estadísticas Rápidas</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Nuevos usuarios este mes:</strong> {{ new_users_month }}</p>
+                <p><strong>Total de descargas:</strong> {{ total_downloads }}</p>
+                <p><strong>Actividad (7 días):</strong> {{ recent_activity }} acciones</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

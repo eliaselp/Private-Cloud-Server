@@ -1,0 +1,127 @@
+<!-- app/templates/admin/view_user.html -->
+{% extends "base.html" %}
+{% block title %}Usuario {{ user.username }} - Mi Nube Privada{% endblock %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('admin.list_users') }}">Usuarios</a></li>
+                <li class="breadcrumb-item active">{{ user.username }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-person-circle"></i> Información del Usuario</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>ID:</strong> {{ user.id }}</p>
+                <p><strong>Usuario:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Rol:</strong> <span class="badge bg-info">{{ user.role }}</span></p>
+                <p><strong>Estado:</strong> 
+                    {% if user.is_active %}
+                    <span class="badge bg-success">Activo</span>
+                    {% else %}
+                    <span class="badge bg-danger">Inactivo</span>
+                    {% endif %}
+                </p>
+                <p><strong>Registro:</strong> {{ user.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+                <p><strong>Último acceso:</strong> {{ user.last_login.strftime('%d/%m/%Y %H:%M') if user.last_login else 'Nunca' }}</p>
+                <p><strong>Última IP:</strong> {{ user.last_ip or 'Desconocida' }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-warning">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+                {% if user.id != current_user.id %}
+                <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" 
+                   class="btn btn-danger"
+                   onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h6>Subidas</h6>
+                        <h3>{{ total_uploads }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h6>Descargas</h6>
+                        <h3>{{ total_downloads }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h6>Eliminados</h6>
+                        <h3>{{ total_deleted }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-clock-history"></i> Actividad Reciente</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_logs %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Acción</th>
+                                <th>Archivo</th>
+                                <th>Carpeta</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in recent_logs %}
+                            <tr>
+                                <td>{{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>
+                                    {% if log.action == 'upload' %}
+                                    <span class="badge bg-success">Subida</span>
+                                    {% elif log.action == 'download' %}
+                                    <span class="badge bg-info">Descarga</span>
+                                    {% elif log.action == 'delete' %}
+                                    <span class="badge bg-danger">Eliminación</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ log.filename }}</td>
+                                <td>{{ log.folder }}</td>
+                                <td>{{ log.ip_address }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No hay actividad registrada.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
