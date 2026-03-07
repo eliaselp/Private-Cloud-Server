@@ -121,10 +121,16 @@ mi_nube_privada/
 
 4. **Configurar variables de entorno (archivo `.env`)**
    ```env
+   # Genera una clave secreta con: python -c "import secrets; print(secrets.token_hex(32))" 
    SECRET_KEY=tu-clave-secreta-muy-larga-cambia-esto
    WTF_CSRF_SECRET_KEY=otra-clave-diferente-para-csrf
+
+   # Base de datos SQLite 
+   DATABASE_URL=sqlite:///instance/nube.db
+
+   # Cifrado AES-256 - genera con: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())" 
    ENCRYPTION_KEY=clave-para-cifrado-aes-256-generada-con-fernett
-   SHARED_FOLDERS=Documentos:./shared_docs,Imagenes:./shared_images
+   SHARED_FOLDERS=Documentos:./folders/shared_docs,Imagenes:./folders/shared_images
    FLASK_DEBUG=True
    ```
 
@@ -213,3 +219,4 @@ Las contribuciones son bienvenidas. Por favor:
 
 
 **¡Disfruta de tu nube privada, segura y bajo tu control!** 🚀
+
