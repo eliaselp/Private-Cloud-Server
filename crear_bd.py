@@ -3,9 +3,10 @@
 import os
 import sqlite3
 from app import create_app, db
-from app.models import User
+from app.models import User, SharedFolder  # Solo importamos lo que existe
 from sqlalchemy import inspect
 from sqlalchemy import text
+
 def crear_base_datos():
     """Función principal que crea y configura la base de datos"""
     
@@ -17,6 +18,12 @@ def crear_base_datos():
     print("\n📁 PASO 1: Creando archivo de base de datos...")
     db_path = os.path.abspath('instance/nube.db')
     print(f"   Ruta: {db_path}")
+    
+    # Eliminar BD existente si hay problemas (opcional, comenta si no quieres borrar)
+    if os.path.exists(db_path):
+        print(f"   🗑️  Eliminando BD anterior...")
+        os.remove(db_path)
+        print(f"   ✅ BD anterior eliminada")
     
     # Asegurar que el directorio instance existe
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -35,29 +42,25 @@ def crear_base_datos():
     
     # PASO 2: Crear tablas con SQLAlchemy
     print("\n🔄 PASO 2: Creando tablas con SQLAlchemy...")
-    app = create_app()
+    app = create_app()  # Ahora create_app() ya incluye db.create_all()
     
     with app.app_context():
         # Forzar recreación del engine
         db.engine.dispose()
         print("   ✅ Engine de SQLAlchemy reiniciado")
         
-        # Crear todas las tablas
-        db.create_all()
-        print("   ✅ Tablas creadas con SQLAlchemy")
-        
         # Verificar tablas creadas
         inspector = inspect(db.engine)
         tablas = inspector.get_table_names()
         print(f"   📊 Tablas encontradas: {tablas}")
         
-        # PASO 3: Crear usuario admin
+        # PASO 3: Crear usuario admin si no existe
         print("\n👤 PASO 3: Verificando usuario admin...")
-        if not User.query.first():
+        if not User.query.filter_by(username='admin').first():
             admin = User(
                 username='admin',
                 email='admin@localhost.com',
-                role='admin',
+                role='admin',  # Usando el campo role como string, igual que en tu modelo
                 is_active=True
             )
             admin.set_password('admin123')
@@ -73,7 +76,13 @@ def crear_base_datos():
         usuarios = User.query.all()
         print(f"\n👥 Usuarios en sistema: {len(usuarios)}")
         for user in usuarios:
-            print(f"   - {user.username} ({user.role})")
+            print(f"   - {user.username} (rol: {user.role})")
+        
+        # Mostrar carpetas compartidas
+        carpetas = SharedFolder.query.all()
+        print(f"\n📁 Carpetas compartidas: {len(carpetas)}")
+        for carpeta in carpetas:
+            print(f"   - {carpeta.name}: {carpeta.path}")
         
         # PASO 4: Verificación final
         print("\n✅ PASO 4: Verificación final")
@@ -86,7 +95,6 @@ def crear_base_datos():
             print(f"   ❌ Error en conexión: {e}")
         
         # Verificar integridad
-        
         try:
             # Contar registros en cada tabla
             for tabla in tablas:

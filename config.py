@@ -39,8 +39,8 @@ class Config:
     
     # Extensiones permitidas
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx', 
-                          'xls', 'xlsx', 'mp4', 'mp3', 'zip', 'rar', '7z','py','exe','gz',
-                          'xml', 'yaml'}
+                          'xls', 'xlsx', 'mp4', 'avi', 'mp3', 'zip', 'rar', '7z','py','exe','gz',
+                          'xml', 'yaml','html','css','js','jsx'}
     
     # Tamaño máximo de archivo (20GB)
     MAX_CONTENT_LENGTH = 20000 * 1024 * 1024

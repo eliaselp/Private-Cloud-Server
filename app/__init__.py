@@ -69,6 +69,10 @@ def create_app(config_class=Config):
     app.register_blueprint(main_bp)
     
     with app.app_context():
+        # PRIMERO: Crear todas las tablas (¡esto es lo único que faltaba!)
+        db.create_all()
+        
+        # SEGUNDO: Ahora crear las carpetas compartidas
         for name, path in app.config['SHARED_FOLDERS'].items():
             if not SharedFolder.query.filter_by(name=name).first():
                 folder = SharedFolder(
